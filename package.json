@@ -9,7 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "beam-client-node": "*",
     "edge": "^5.0.0",
-    "beam-client-node":"*"
+    "random-seed": "^0.3.0"
   }
 }
