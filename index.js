@@ -60,35 +60,52 @@ function flattenBeamMessage(message) {
 }
 
 function filter(message) {
-	return message.length >= 300;
+	if(message.charAt(0) === `[`) {
+		return false;
+	}
+	if(message.length > 300) {
+		return true;
+	}
+	if(message.search(':dial') !== -1) {
+		return true;
+	}
+	if(message.search(':t') !== -1) {
+		return true;
+	}
+	if(message.search(/http|https/) !== -1) {
+		return true;
+	}
 }
 
+var settings="[:punct none][:error ignore on][:rate 250]";
+
 function say(id, message) {
-	if(!filter(message)) {
+	if (filter(message)) {
 		return;
 	}
-	speak.stdin.write(makeVoice(id) + ' ' + message.replace(/\n/g, '') +'\n');
+	speak.stdin.write(settings + makeVoice(id) + ' ' + message.replace(/\n/g, '') +'\n');
 }
 var auth = require('./config.json');
-beam.use('password', auth).attempt().then(function (res) {
+beam.use('password', auth)
+.attempt()
+.then(res => {
 		userID = res.body.id;
 		return beam.request('get', '/channels/' + channel);
-}).then(function(res){
+}).then(res => {
 		channelID = res.body.id;
 		return beam.chat.join(res.body.id);
-}).then(function (res) {
+}).then(res => {
 		var data = res.body;
 		socket = new BeamSocket(data.endpoints).boot();
 		return socket.call('auth', [channelID, userID, data.authkey]);
-}).then(function(){
+}).then(() => {
 		console.log('You are now authenticated!');
-		socket.on('ChatMessage', function (data) {
-				console.log('We got a ChatMessage packet!');
-				console.log(data.message.message);
-				say(data.user_id,flattenBeamMessage(data.message.message));
+		socket.on('ChatMessage', data => {
+			console.log('We got a ChatMessage packet!');
+			console.log(data.message.message);
+			say(data.user_id*100, flattenBeamMessage(data.message.message));
 		});
-}).catch(function (err) {
-		//If this is a failed request, don't log the entire request. Just log the body
+}).catch(err => {
 		if(err.message !== undefined && err.message.body !== undefined) {
 				err = err.message.body;
 		}
