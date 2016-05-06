@@ -1,4 +1,4 @@
-# beam-tts-chat
+# beam-tts-chat-fonix
 Says chat messages on beam using, FonixTalk
 
 1. Npm install
@@ -7,7 +7,7 @@ Says chat messages on beam using, FonixTalk
 1. Node index.js
 
 # Compile
-I can't redistribute the binaries so you'll have to make them yourself.
+I can't redistribute the binaries due to licensing issues so you'll have to make them yourself. If you can't do this then look at [beam-tts-chat-winapi](https://github.com/probableprime/beam-tts-chat-winapi)
 
 Compile https://github.com/whatsecretproject/SharpTalk 's "Speak" project into an exe. Copy that to `process/` in the root of this project. Included required DLLs.
 
